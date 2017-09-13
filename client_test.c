@@ -2,13 +2,13 @@
 #include "network_utils.h"
 
 int main(int argc, char *argv[]){
-	int sockfd = start_server(5555);
+	int sockfd = connect_server("localhost", 5555);
 	while(1){
 		char *str = (char *)malloc(256);
-		scanf("%s", str);
-		int bytes_written = 0;
-		if((bytes_written = write(sockfd, str, strlen(str))) <= 0){
-			continue;
+		while(1){
+			scanf("%s", str);
+			write(sockfd, str, strlen(str));
+			write(sockfd, "\n\r", 1);
 		}
 	}
 	return 0;

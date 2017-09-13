@@ -4,7 +4,7 @@ project (net_test)
 find_package(Threads REQUIRED)
 
 set (DEFAULT_PORT 5555)
-
+add_definitions(-DENABLE_LOG)
 #configure file to add CMake settings to it
 configure_file (
 	"${PROJECT_SOURCE_DIR}/config.h.in"
