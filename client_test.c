@@ -15,14 +15,15 @@ int main(int argc, char *argv[]){
 	signal(SIGINT, exit_handler);
 	while(1){
 		char *str = (char *)malloc(256);
-		read(1, str, 1);
-		int bwrite = write(sockfd, str, 1);
-		if(bwrite == 0){
-			log_inf("CLIENT", "FIN Received back, breaking connection...");	
-			exit(0);
+		memset(str, '\0', 256);
+		int len = 0;
+		char c = '\0';
+		while( (c=getchar()) != '\n'){
+			str[len++] = c;
 		}
-		else if(bwrite < 0){
-			log_inf("CLIENT", "write error, exiting...");
+		if (writeln(sockfd, str, len) < 0){
+			log_err("CLIENT", "FATAL write error");
+			close(sockfd);
 			exit(-1);
 		}
 	}

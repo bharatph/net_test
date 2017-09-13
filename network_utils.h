@@ -50,6 +50,29 @@ int write_data(int sockfd, const char *in_buffer, int blen){
 	return bwrite; //here it indicates error or success
 }
 
+int writeln(int sockfd, char *buf, int len){
+	int bwrite = write(sockfd, buf, len);
+	//log_inf("CLIENT", "written buf: %s, sent: %d", buf, bwrite);
+	if(bwrite > 0){
+		if(bwrite < len){
+			return writeln(sockfd, buf+bwrite, len - bwrite);
+		}
+		if(bwrite == len){
+			write(sockfd, "\n", 1);
+			//log_inf("CLIENT", "write sucessful");
+			return 0;
+		}
+	}
+	else if(bwrite == 0){
+		log_inf("CLIENT", "Unspecified write error");
+		return -1;
+	}
+	else if(bwrite < 0){
+		log_inf("CLIENT", "write error, exiting...");
+		return -1;
+	}
+}
+
 /*
  * Write a file to a socket
  * Automatically chooses the optimized way at compile time
