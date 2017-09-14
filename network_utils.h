@@ -107,6 +107,40 @@ int read_data(int sockfd, char *buffer, int rlen){
 	return read_bytes;
 }
 
+char *readln(int sockfd){
+		char *buf = (char *)malloc(256);
+		int ptr = 0;
+		memset(buf, '\0', 256);
+		int quit=0;
+		for(ptr=0;quit!=1;ptr++){
+			int bread = read(sockfd, buf+ptr, 1);
+			if(bread > 0){
+				//log_inf("SERVER", "Content read[%d]: %c", ptr, buf[ptr]);
+				if(buf[ptr] == '\n'){
+					buf[ptr] = '\0';
+					quit = 1;
+				}
+			}
+			else if(bread == 0){//EOF hit, client disconnected
+				log_inf("SERVER", "EOF hit");
+				return NULL;
+			}
+			else if(bread < 0){ //read error
+				log_inf("SERVER", "read error exiting...");
+				return NULL;
+			}
+		}
+		
+		//sleep(1);
+		//this checking is used to prevent read from reading continuosly even if no data is sent in the occasion of peer disconnection
+		if(buf[0] == '\0'){ //FIXME use non-char checking, such as size??
+			return NULL;
+		}
+		
+		log_inf("SERVER", "%s", buf);
+		return buf;
+}
+
 /** Read data from the given socket
  * @param sockfd The socket descriptor to read form
  */
