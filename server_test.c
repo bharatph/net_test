@@ -12,6 +12,7 @@ int main(int argc, char *argv[]){
 			printf("Client Disconnected\n");
 			return -1;
 		}
+		writeln(sockfd, "Reading data done", 15);
 		printf("%s\n", buf); 
 	}
 	return 0;
